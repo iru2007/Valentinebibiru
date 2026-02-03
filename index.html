@@ -208,21 +208,29 @@
   const fx = document.getElementById("fx");
   const fx2 = document.getElementById("fx2");
 
+  // ✅ FIX: il "No" resta dentro .buttons e si muove fluido
   function moveNo(){
-    const r = page1.getBoundingClientRect();
+    const container = no.parentElement; // .buttons
+    const c = container.getBoundingClientRect();
     const b = no.getBoundingClientRect();
-    const pad = 20;
+    const pad = 12;
 
-    const minX = pad;
-    const maxX = r.width - b.width - pad;
-    const minY = 150;
-    const maxY = r.height - b.height - pad;
+    const maxX = c.width  - b.width  - pad*2;
+    const maxY = c.height - b.height - pad*2;
 
-    if(maxX <= minX || maxY <= minY) return;
+    if (maxX <= 0 || maxY <= 0) return;
 
-    no.style.left = (Math.random()*(maxX-minX)+minX) + "px";
-    no.style.top  = (Math.random()*(maxY-minY)+minY) + "px";
-    no.style.transform = "none";
+    const x = pad + Math.random() * maxX;
+    const y = pad + Math.random() * maxY;
+
+    // ancoriamo in alto a sinistra del contenitore
+    no.style.left = pad + "px";
+    no.style.top  = pad + "px";
+
+    // movimento fluido via transform (non può uscire)
+    no.style.transform = `translate(${x - pad}px, ${y - pad}px)`;
+    no.style.transition = "transform 160ms ease-out";
+    no.style.willChange = "transform";
   }
 
   no.addEventListener("mouseover", moveNo);
